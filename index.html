@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="ru" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ilay | портфолио</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;400;500;600&family=Dancing+Script:wght@600;700&display=swap');
+        
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: linear-gradient(135deg, #fff1f2 0%, #ffe4e6 100%);
+            color: #4c0519;
+        }
+
+        .font-cursive {
+            font-family: 'Dancing Script', cursive;
+        }
+
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #ffe4e6;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #fb7185;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #f43f5e;
+        }
+        
+        .glass-card {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 228, 230, 0.8);
+            box-shadow: 0 4px 6px -1px rgba(225, 29, 72, 0.1), 0 2px 4px -1px rgba(225, 29, 72, 0.06);
+        }
+
+        @keyframes gentle-float {
+            0%, 100% { transform: translateY(0) rotate(0deg) scale(1); }
+            50% { transform: translateY(-30px) rotate(2deg) scale(1.05); }
+        }
+        @keyframes gentle-sway {
+            0%, 100% { transform: translateX(0) scale(1) rotate(-1deg); }
+            50% { transform: translateX(25px) scale(1.1) rotate(1deg); }
+        }
+        .bg-line-anim-1 { animation: gentle-float 6s ease-in-out infinite; }
+        .bg-line-anim-2 { animation: gentle-sway 7s ease-in-out infinite; }
+
+        @keyframes float-sphere {
+            0%, 100% { transform: translate(0, 0); }
+            33% { transform: translate(30px, -50px); }
+            66% { transform: translate(-20px, 20px); }
+        }
+        .animate-sphere-1 { animation: float-sphere 12s ease-in-out infinite; }
+        .animate-sphere-2 { animation: float-sphere 15s ease-in-out infinite reverse; }
+        .animate-sphere-3 { animation: float-sphere 18s ease-in-out infinite 2s; }
+
+        .perspective-viewport {
+            perspective: 1200px;
+        }
+        
+        .reveal-3d {
+            opacity: 0;
+            transform: translateY(30px) rotateX(5deg) scale(0.96);
+            transition: opacity 1.5s cubic-bezier(0.22, 1, 0.36, 1), transform 1.5s cubic-bezier(0.22, 1, 0.36, 1);
+            will-change: opacity, transform;
+            transform-style: preserve-3d;
+        }
+        
+        .reveal-3d.active {
+            opacity: 1;
+            transform: translateY(0) rotateX(0) scale(1);
+        }
+
+        .liquid-hover {
+            transition: all 1.8s cubic-bezier(0.19, 1, 0.22, 1);
+            will-change: transform, box-shadow, opacity;
+        }
+
+        /* Стиль для сообщений об отправке */
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 1rem 2rem;
+            border-radius: 9999px;
+            background: linear-gradient(135deg, #e11d48, #fb7185);
+            color: white;
+            font-weight: 600;
+            box-shadow: 0 10px 25px -5px rgba(225, 29, 72, 0.5);
+            z-index: 9999;
+            transform: translateX(400px);
+            transition: transform 0.3s ease;
+        }
+        
+        .notification.show {
+            transform: translateX(0);
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col relative overflow-x-hidden">
+
+    <!-- Мягкие фоновые линии и сферы -->
+    <div class="fixed inset-0 -z-20 pointer-events-none opacity-50">
+        <svg class="absolute w-[120%] h-[120%] -left-[10%] -top-[10%] bg-line-anim-1" viewBox="0 0 100 100" preserveAspectRatio="none">
+            <defs>
+                <linearGradient id="grad1" x1="0%" y1="100%" x2="100%" y2="0%">
+                    <stop offset="0%" style="stop-color:#ff9a9e;stop-opacity:0" />
+                    <stop offset="20%" style="stop-color:#ff9a9e;stop-opacity:0.6" />
+                    <stop offset="80%" style="stop-color:#f43f5e;stop-opacity:0.6" />
+                    <stop offset="100%" style="stop-color:#e11d48;stop-opacity:0" />
+                </linearGradient>
+            </defs>
+            <path d="M-10,110 Q50,40 120,0" stroke="url(#grad1)" stroke-width="0.8" fill="none" stroke-linecap="round" />
+        </svg>
+
+        <svg class="absolute w-[120%] h-[120%] -left-[10%] -top-[10%] bg-line-anim-2" viewBox="0 0 100 100" preserveAspectRatio="none">
+            <defs>
+                <linearGradient id="grad2" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" style="stop-color:#fecdd3;stop-opacity:0" />
+                    <stop offset="40%" style="stop-color:#fb7185;stop-opacity:0.5" />
+                    <stop offset="100%" style="stop-color:#e11d48;stop-opacity:0" />
+                </linearGradient>
+            </defs>
+            <path d="M-10,30 Q60,70 120,60" stroke="url(#grad2)" stroke-width="0.5" fill="none" stroke-linecap="round" />
+        </svg>
+
+        <div class="absolute top-[20%] right-[10%] w-96 h-96 bg-rose-200/30 rounded-full blur-3xl animate-pulse"></div>
+        <div class="absolute bottom-[10%] left-[5%] w-72 h-72 bg-pink-200/20 rounded-full blur-3xl animate-pulse delay-1000"></div>
+
+        <div class="absolute top-[15%] right-[15%] w-24 h-24 rounded-full bg-gradient-to-br from-[#fecdd3] via-[#fb7185] to-[#e11d48] shadow-[inset_-10px_-10px_20px_rgba(0,0,0,0.2),0_20px_40px_rgba(225,29,72,0.4)] animate-sphere-1 opacity-90 z-[-5]">
+            <div class="absolute top-4 left-4 w-8 h-8 rounded-full bg-white opacity-50 blur-md"></div>
+        </div>
+
+        <div class="absolute bottom-[20%] left-[10%] w-32 h-32 rounded-full bg-gradient-to-br from-[#fff1f2] via-[#fda4af] to-[#e11d48] shadow-[inset_-10px_-10px_20px_rgba(0,0,0,0.15),0_20px_40px_rgba(225,29,72,0.3)] animate-sphere-2 opacity-85 z-[-5]">
+             <div class="absolute top-6 left-6 w-10 h-10 rounded-full bg-white opacity-40 blur-lg"></div>
+        </div>
+
+        <div class="absolute top-[60%] right-[30%] w-16 h-16 rounded-full bg-gradient-to-br from-[#ffe4e6] to-[#fb7185] shadow-[inset_-5px_-5px_10px_rgba(0,0,0,0.1),0_10px_20px_rgba(225,29,72,0.2)] animate-sphere-3 opacity-70 z-[-5]"></div>
+        
+        <div class="absolute top-[25%] left-[20%] w-20 h-20 rounded-full bg-gradient-to-br from-[#fecdd3] to-[#e11d48] shadow-[inset_-8px_-8px_16px_rgba(0,0,0,0.2),0_15px_30px_rgba(225,29,72,0.35)] animate-sphere-2 opacity-80 z-[-5]" style="animation-delay: -5s; animation-duration: 14s;">
+            <div class="absolute top-3 left-3 w-6 h-6 rounded-full bg-white opacity-40 blur-md"></div>
+        </div>
+    </div>
+
+    <!-- Уведомление -->
+    <div id="notification" class="notification">
+        Сообщение отправлено!
+    </div>
+
+    <!-- Шапка -->
+    <header class="pt-10 pb-6">
+        <div class="container mx-auto px-6 text-center">
+            <div class="relative inline-block group">
+                <div class="text-[5.5rem] md:text-8xl font-cursive bg-gradient-to-r from-[#e11d48] via-[#f43f5e] to-[#fb7185] bg-clip-text text-transparent drop-shadow-md p-2 cursor-default select-none transition-transform duration-1000 ease-out group-hover:scale-105 relative z-10 leading-tight">
+                    ilay
+                </div>
+                <div class="absolute top-0 -right-2 md:-right-6 w-8 h-8 md:w-12 md:h-12 bg-gradient-to-br from-[#fecdd3] to-[#e11d48] rounded-full blur-[1px] opacity-80 shadow-lg z-0 animate-pulse"></div>
+                <div class="absolute -bottom-2 left-1/2 -translate-x-1/2 w-3/4 h-2 bg-[#ffe4e6] rounded-full blur-md -z-10"></div>
+            </div>
+            
+            <nav class="mt-8 flex flex-wrap justify-center gap-8 md:gap-16 text-[#881337] font-medium text-lg tracking-wide">
+                <a href="#home" class="hover:text-[#e11d48] transition-colors relative after:content-[''] after:absolute after:-bottom-1 after:left-0 after:w-0 after:h-0.5 after:bg-[#e11d48] after:transition-all hover:after:w-full">Главная</a>
+                <a href="#portfolio" class="hover:text-[#e11d48] transition-colors relative after:content-[''] after:absolute after:-bottom-1 after:left-0 after:w-0 after:h-0.5 after:bg-[#e11d48] after:transition-all hover:after:w-full">Портфолио</a>
+                <a href="#reviews-box" class="hover:text-[#e11d48] transition-colors relative after:content-[''] after:absolute after:-bottom-1 after:left-0 after:w-0 after:h-0.5 after:bg-[#e11d48] after:transition-all hover:after:w-full">Отзывы</a>
+                <!-- Кнопка Telegram вместо слова Контакты -->
+                <a href="https://t.me/+3816rWkPnZ4zZjAy" target="_blank" rel="noopener noreferrer" 
+                   class="bg-gradient-to-r from-[#e11d48] to-[#fb7185] text-white px-6 py-2 rounded-full shadow-lg hover:shadow-[0_10px_25px_-5px_rgba(225,29,72,0.6)] transform hover:scale-105 transition-all duration-300 flex items-center gap-2">
+                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69.01-.03.01-.14-.07-.2-.08-.06-.19-.04-.27-.02-.12.02-1.96 1.25-5.54 3.69-.52.36-1 .53-1.42.52-.47-.01-1.37-.26-2.04-.48-.82-.27-1.47-.42-1.42-.88.03-.24.27-.48.74-.74 2.93-1.28 4.88-2.12 5.85-2.53 2.78-1.15 3.36-1.35 3.73-1.36.08 0 .27.02.39.12.1.08.13.19.14.27-.01.1-.03.27-.05.42z"/>
+                    </svg>
+                    Telegram
+                </a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="flex-grow container mx-auto px-6 py-12 max-w-6xl">
+        
+        <!-- Секция с аватаром и отзывами -->
+        <section id="home" class="grid grid-cols-1 md:grid-cols-2 gap-12 lg:gap-24 items-center mb-32">
+            
+            <div class="flex flex-col items-center justify-center">
+                <div class="w-64 h-64 md:w-72 md:h-72 rounded-full overflow-hidden border-8 border-white/60 shadow-[0_20px_50px_-12px_rgba(225,29,72,0.35)] mb-6 relative bg-[#fff1f2] flex items-center justify-center liquid-hover hover:scale-[1.03] hover:shadow-[0_30px_60px_-10px_rgba(225,29,72,0.4)]">
+                    <img src="https://i.imgur.com/jL897Jj.jpeg" alt="void" class="w-full h-full object-cover" onerror="this.src='https://placehold.co/400x400/ffe4e6/e11d48?text=void'">
+                </div>
+            </div>
+
+            <div id="reviews-box" class="bg-white/30 backdrop-blur-md p-8 md:p-10 rounded-[2.5rem] shadow-[0_10px_40px_-10px_rgba(225,29,72,0.1)] border border-rose-100">
+                <h2 class="text-3xl font-medium mb-8 text-[#881337]">Отзывы</h2>
+                <div class="space-y-5">
+                    
+                    <div class="glass-card p-4 rounded-2xl flex items-center gap-5 liquid-hover hover:translate-x-4 hover:shadow-[0_10px_30px_-5px_rgba(251,113,133,0.4)]">
+                        <div class="w-12 h-12 rounded-full border-2 border-rose-300 flex-shrink-0 overflow-hidden">
+                            <img src="https://i.imgur.com/WtVPTiw.jpeg" alt="Клиент" class="w-full h-full object-cover">
+                        </div>
+                        <div>
+                            <p class="text-[#4c0519] leading-tight mb-1">«Отличная работа, всё понравилось»</p>
+                            <p class="text-sm font-bold text-[#e11d48] opacity-90">— Александр Петров</p>
+                        </div>
+                    </div>
+
+                    <div class="glass-card p-4 rounded-2xl flex items-center gap-5 liquid-hover hover:translate-x-4 hover:shadow-[0_10px_30px_-5px_rgba(251,113,133,0.4)]">
+                        <div class="w-12 h-12 rounded-full border-2 border-rose-300 flex-shrink-0 overflow-hidden">
+                            <img src="https://i.imgur.com/zPdFtM3.jpeg" alt="Клиент" class="w-full h-full object-cover">
+                        </div>
+                        <div>
+                            <p class="text-[#4c0519] leading-tight mb-1">«Быстро и качественно, спасибо!»</p>
+                            <p class="text-sm font-bold text-[#e11d48] opacity-90">— Екатерина Смирнова</p>
+                        </div>
+                    </div>
+
+                    <div class="glass-card p-4 rounded-2xl flex items-center gap-5 liquid-hover hover:translate-x-4 hover:shadow-[0_10px_30px_-5px_rgba(251,113,133,0.4)]">
+                        <div class="w-12 h-12 rounded-full border-2 border-rose-300 flex-shrink-0 overflow-hidden">
+                            <img src="https://i.imgur.com/u5M6sld.jpeg" alt="Клиент" class="w-full h-full object-cover">
+                        </div>
+                        <div>
+                            <p class="text-[#4c0519] leading-tight mb-1">«Всё супер, буду рекомендовать!»</p>
+                            <p class="text-sm font-bold text-[#e11d48] opacity-90">— Дмитрий Иванов</p>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- Секция портфолио -->
+        <section id="portfolio" class="mb-24">
+            <h2 class="text-4xl font-medium mb-12 text-[#881337] text-center drop-shadow-sm">Works</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-16">
+                
+                <div class="col-span-1 md:col-span-2 flex justify-center">
+                    <div class="w-full md:w-1/2 video-card bg-white/80 p-3 rounded-[2rem] shadow-sm liquid-hover border border-rose-100 hover:shadow-[0_25px_50px_-12px_rgba(225,29,72,0.3)] cursor-pointer">
+                        <div class="aspect-[9/16] md:aspect-video bg-black rounded-[1.5rem] overflow-hidden shadow-inner relative group">
+                            <video class="w-full h-full object-cover" muted loop playsinline controls poster="https://placehold.co/600x400/ffe4e6/e11d48?text=Видео+1">
+                                <source src="https://i.imgur.com/X67PzBV.mp4" type="video/mp4">
+                            </video>
+                            <div class="absolute inset-0 flex items-center justify-center bg-black/20 group-hover:bg-transparent transition-all pointer-events-none">
+                                <div class="w-16 h-16 rounded-full bg-white/90 backdrop-blur-sm flex items-center justify-center shadow-lg group-hover:opacity-0 group-hover:scale-150 transition-all duration-500">
+                                    <svg class="w-6 h-6 text-[#e11d48]" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="video-card bg-white/80 p-3 rounded-[2rem] shadow-sm liquid-hover border border-rose-100 hover:shadow-[0_25px_50px_-12px_rgba(225,29,72,0.3)] cursor-pointer">
+                    <div class="aspect-[9/16] md:aspect-video bg-black rounded-[1.5rem] overflow-hidden shadow-inner relative group">
+                        <iframe class="w-full h-full object-cover rounded-[1.5rem]" src="https://www.youtube.com/embed/Sa0juOhU8B0" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+                    </div>
+                </div>
+
+                <div class="video-card bg-white/80 p-3 rounded-[2rem] shadow-sm liquid-hover border border-rose-100 hover:shadow-[0_25px_50px_-12px_rgba(225,29,72,0.3)] cursor-pointer">
+                    <div class="aspect-[9/16] md:aspect-video bg-black rounded-[1.5rem] overflow-hidden shadow-inner relative group">
+                        <iframe class="w-full h-full object-cover rounded-[1.5rem]" src="https://www.youtube.com/embed/neFQ_qQaYYg" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+                    </div>
+                </div>
+
+                <div class="col-span-1 md:col-span-2 flex justify-center">
+                    <div class="w-full md:w-1/2 video-card bg-white/80 p-3 rounded-[2rem] shadow-sm liquid-hover border border-rose-100 hover:shadow-[0_25px_50px_-12px_rgba(225,29,72,0.3)] cursor-pointer">
+                        <div class="aspect-[9/16] md:aspect-video bg-black rounded-[1.5rem] overflow-hidden shadow-inner relative group">
+                            <video class="w-full h-full object-cover" muted loop playsinline controls poster="https://placehold.co/600x400/ffe4e6/e11d48?text=Видео+2">
+                                <source src="https://i.imgur.com/S4TcKJI.mp4" type="video/mp4">
+                            </video>
+                             <div class="absolute inset-0 flex items-center justify-center bg-black/20 group-hover:bg-transparent transition-all pointer-events-none">
+                                <div class="w-16 h-16 rounded-full bg-white/90 backdrop-blur-sm flex items-center justify-center shadow-lg group-hover:opacity-0 group-hover:scale-150 transition-all duration-500">
+                                    <svg class="w-6 h-6 text-[#e11d48]" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Ссылки на портфолио и форма обратной связи -->
+            <div class="flex flex-col items-center gap-8 text-center">
+                <div class="animate-bounce text-[#e11d48]">
+                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path></svg>
+                </div>
+                
+                <a href="https://disk.yandex.ru/d/MMiNye8O_YQ4pQ" target="_blank" rel="noopener noreferrer" 
+                   class="text-xl md:text-2xl font-bold text-[#e11d48] hover:scale-105 transition-transform duration-300 hover:text-[#be123c] relative group">
+                    Все работы в полном качестве
+                    <span class="absolute -bottom-1 left-0 w-0 h-0.5 bg-[#e11d48] transition-all duration-300 group-hover:w-full"></span>
+                </a>
+
+                <!-- Форма обратной связи -->
+                <div class="w-full max-w-md mt-8 glass-card p-8 rounded-[2rem]">
+                    <h3 class="text-2xl font-medium mb-6 text-[#881337]">Связаться со мной</h3>
+                    <form id="contactForm" class="space-y-4">
+                        <input type="text" id="name" placeholder="Ваше имя" required 
+                               class="w-full px-4 py-3 rounded-full border border-rose-200 bg-white/50 backdrop-blur-sm focus:outline-none focus:border-[#e11d48] focus:ring-2 focus:ring-[#e11d48]/20 transition-all">
+                        <input type="text" id="contactInfo" placeholder="Telegram / Email / Телефон" required
+                               class="w-full px-4 py-3 rounded-full border border-rose-200 bg-white/50 backdrop-blur-sm focus:outline-none focus:border-[#e11d48] focus:ring-2 focus:ring-[#e11d48]/20 transition-all">
+                        <textarea id="message" placeholder="Ваше сообщение" rows="4" required
+                                  class="w-full px-4 py-3 rounded-2xl border border-rose-200 bg-white/50 backdrop-blur-sm focus:outline-none focus:border-[#e11d48] focus:ring-2 focus:ring-[#e11d48]/20 transition-all resize-none"></textarea>
+                        <button type="submit" 
+                                class="w-full bg-gradient-to-r from-[#e11d48] to-[#fb7185] text-white font-semibold py-3 px-6 rounded-full shadow-lg hover:shadow-[0_10px_25px_-5px_rgba(225,29,72,0.6)] transform hover:scale-105 transition-all duration-300">
+                            Отправить сообщение
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Футер -->
+    <footer class="mt-auto border-t border-rose-200 py-10">
+        <div class="container mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-6">
+            <p class="text-[#9f1239] text-sm font-medium">© 2024 void Portfolio</p>
+            
+            <a href="https://disk.yandex.ru/d/MMiNye8O_YQ4pQ" target="_blank" rel="noopener noreferrer" 
+               class="text-[#9f1239] text-sm font-medium hover:text-[#e11d48] underline decoration-[#e11d48]/30 hover:decoration-[#e11d48] underline-offset-4 transition-all flex items-center gap-2 group">
+                Портфолио на Яндекс.Диске
+                <span class="inline-block transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5">↗</span>
+            </a>
+        </div>
+    </footer>
+
+    <script>
+        // Плавный скролл
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                const targetId = this.getAttribute('href');
+                if (targetId === '#') return;
+                
+                const target = document.querySelector(targetId);
+                if (target) {
+                    e.preventDefault();
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // 3D анимации при скролле
+        document.addEventListener('DOMContentLoaded', () => {
+            const elementsToAnimate = document.querySelectorAll('header > div, #home > div, #reviews-box, .glass-card, h2, .bg-white\\/80');
+            
+            const observerOptions = {
+                root: null,
+                rootMargin: '0px',
+                threshold: 0.15
+            };
+
+            const observer = new IntersectionObserver((entries, observer) => {
+                entries.forEach((entry, index) => {
+                    if (entry.isIntersecting) {
+                        setTimeout(() => {
+                            entry.target.classList.add('active');
+                        }, index * 50);
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, observerOptions);
+
+            elementsToAnimate.forEach(el => {
+                el.classList.add('reveal-3d');
+                observer.observe(el);
+            });
+            
+            document.body.classList.add('perspective-viewport');
+
+            // Видео при наведении
+            const videoCards = document.querySelectorAll('.video-card');
+            
+            videoCards.forEach(card => {
+                const video = card.querySelector('video');
+                if (!video) return;
+
+                card.addEventListener('mouseenter', () => {
+                    if (video.paused) {
+                        video.play().catch(err => console.log('Autoplay prevented', err));
+                    }
+                });
+                
+                card.addEventListener('mouseleave', () => {
+                    if (!document.fullscreenElement && !document.webkitFullscreenElement && !document.mozFullScreenElement && !document.msFullscreenElement) {
+                        video.pause();
+                        video.currentTime = 0;
+                    }
+                });
+            });
+
+            // Обработка формы
+            const form = document.getElementById('contactForm');
+            const notification = document.getElementById('notification');
+
+            form.addEventListener('submit', async (e) => {
+                e.preventDefault();
+
+                const name = document.getElementById('name').value;
+                const contactInfo = document.getElementById('contactInfo').value;
+                const message = document.getElementById('message').value;
+
+                // Формируем текст сообщения для Telegram
+                const text = `🔔 Новое сообщение с сайта!\n\n👤 Имя: ${name}\n📱 Контакт: ${contactInfo}\n💬 Сообщение: ${message}`;
+
+                // Токен бота и ID чата - ЗАМЕНИТЕ НА СВОИ!
+                const botToken = '8681498552:AAHUET4xcpw_g3Rkw_-ziIZjFvSyc7We9RM'; // Вставьте свой токен бота
+                const chatId = '327939643'; // Вставьте свой chat_id
+
+                try {
+                    const response = await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            chat_id: chatId,
+                            text: text,
+                            parse_mode: 'HTML'
+                        })
+                    });
+
+                    if (response.ok) {
+                        // Показываем уведомление
+                        notification.classList.add('show');
+                        form.reset();
+                        
+                        // Скрываем уведомление через 3 секунды
+                        setTimeout(() => {
+                            notification.classList.remove('show');
+                        }, 3000);
+                    } else {
+                        alert('Ошибка при отправке. Попробуйте позже.');
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                    alert('Ошибка при отправке. Проверьте подключение к интернету.');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
